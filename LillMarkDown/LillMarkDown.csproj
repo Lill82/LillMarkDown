@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>LillMarkDown</AssemblyName>
+    <RootNamespace>LillMarkDown</RootNamespace>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+  </PropertyGroup>
+
+  <!-- Publish-only: active when a publish profile sets PublishProtocol (e.g. "FileSystem").
+       Keeps Debug/Run builds framework-dependent and fast. -->
+  <PropertyGroup Condition="'$(PublishProtocol)' != ''">
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="itext7" Version="9.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="LillMarkDown.ico" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <ApplicationIcon>LillMarkDown.ico</ApplicationIcon>
+  </PropertyGroup>
+
+</Project>
