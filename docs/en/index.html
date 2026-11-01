@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LillMarkDown — PDF to Markdown for Windows</title>
+<meta name="description" content="Free, open-source Windows desktop app that converts PDF files to Markdown: headings, paragraphs and lists, without running headers or page numbers.">
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="alternate" hreflang="ca" href="https://lill82.github.io/LillMarkDown/">
+<link rel="alternate" hreflang="es" href="https://lill82.github.io/LillMarkDown/es/">
+<link rel="alternate" hreflang="en" href="https://lill82.github.io/LillMarkDown/en/">
+<link rel="alternate" hreflang="x-default" href="https://lill82.github.io/LillMarkDown/">
+<meta property="og:title" content="LillMarkDown">
+<meta property="og:locale" content="en_US">
+<meta property="og:description" content="Convert PDFs to Markdown on Windows. Drag, drop, done.">
+<meta property="og:image" content="https://lill82.github.io/LillMarkDown/screenshot.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="LillMarkDown, home">
+      <img src="../icon.png" alt="" width="32" height="32">
+      <span><span class="l">Lill</span><span class="m">MarkDown</span></span>
+    </a>
+    <nav>
+      <div class="lang" aria-label="Language">
+        <a href="../" hreflang="ca" lang="ca">CA</a>
+        <a href="../es/" hreflang="es" lang="es">ES</a>
+        <span aria-current="page" lang="en">EN</span>
+      </div>
+      <a href="https://github.com/Lill82/LillMarkDown">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1>From PDF to <em>Markdown</em>, by drag and drop.</h1>
+      <p class="lead">LillMarkDown is a free, open-source Windows app that turns PDF files into clean Markdown: with headings, paragraphs and lists, and without running headers or page numbers.</p>
+      <div class="actions">
+        <a class="btn primary" href="https://github.com/Lill82/LillMarkDown/releases/latest/download/LillMarkDown.exe">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download for Windows
+        </a>
+        <a class="btn secondary" href="https://github.com/Lill82/LillMarkDown">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.73-1.54-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+          Source code
+        </a>
+      </div>
+      <p class="meta">Windows 10/11 (64-bit) · A single executable, nothing to install · AGPL-3.0 licence</p>
+    </div>
+    <div class="shot">
+      <img src="../screenshot.png" alt="LillMarkDown window with the area for dropping PDF files (Catalan interface)" width="546" height="553">
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2>How it works</h2>
+      <p class="sub">Three steps, no setup.</p>
+      <ol class="steps">
+        <li><h3>Drop</h3><p>Drop one or more PDFs on the window, or a whole folder (subfolders are converted too). You can also click to pick them.</p></li>
+        <li><h3>Convert</h3><p>It reads the size and weight of the type on each line to tell headings, paragraphs and lists apart.</p></li>
+        <li><h3>Done</h3><p>A <code>.md</code> file with the same name appears next to each PDF. Nothing is overwritten unless you ask.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Before and after</h2>
+      <p class="sub">The PDF's text, in order and with structure.</p>
+      <div class="compare">
+        <div class="pane pdf">
+          <div class="label">PDF</div>
+          <div class="body">
+            <div class="hdr"><span>Annual report 2025</span><span>Projects Department</span></div>
+            <div class="t1">Annual report</div>
+            <p>This document covers the year's main activities and the results achieved in each area of work.</p>
+            <div class="t2">Goals</div>
+            <ul>
+              <li>Reduce response times</li>
+              <li>Extend the service to three new sites</li>
+            </ul>
+            <div class="ftr">Page 1 of 12</div>
+          </div>
+        </div>
+        <div class="arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"/><path d="m13 6 6 6-6 6"/></svg>
+        </div>
+        <div class="pane">
+          <div class="label">Markdown</div>
+<pre><span class="h"># Annual report</span>
+
+This document covers the year's main activities and the results achieved in each area of work.
+
+<span class="h">## Goals</span>
+
+<span class="k">-</span> Reduce response times
+<span class="k">-</span> Extend the service to three new sites</pre>
+        </div>
+      </div>
+      <p class="note">The header and page number, repeated on every page, are removed automatically.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>What it does</h2>
+      <p class="sub">Made for reusing documents in Markdown editors, wikis or AI tools.</p>
+      <div class="features">
+        <div class="feature"><h3>Headings by size</h3><p>The largest font sizes become <code>#</code>, <code>##</code> and <code>###</code>. Short bold or all-caps lines become a subheading.</p></div>
+        <div class="feature"><h3>Whole paragraphs</h3><p>Rejoins wrapped lines and words split by a hyphen at the end of a line.</p></div>
+        <div class="feature"><h3>Lists</h3><p>Bullets (<code>•</code>, <code>–</code>), numbers (<code>1.</code>, <code>1)</code>) and letters (<code>a)</code>) become Markdown lists.</p></div>
+        <div class="feature"><h3>No clutter</h3><p>Repeated headers, footers and page numbers are dropped. Pages are separated with <code>---</code>.</p></div>
+        <div class="feature"><h3>Batch mode</h3><p>Converts dozens of files at once, folders included, showing progress file by file.</p></div>
+        <div class="feature"><h3>Clear warnings</h3><p>Tells you when a PDF is scanned (it has no text) or password-protected.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap two">
+      <div>
+        <h3>Requirements</h3>
+        <ul>
+          <li>64-bit Windows 10 or 11.</li>
+          <li>Nothing else: the executable carries everything it needs.</li>
+          <li>The app's interface is in Catalan.</li>
+          <li>The first time, Windows SmartScreen may show a warning because the executable isn't signed. Click <em>More info</em>, then <em>Run anyway</em>.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Limitations</h3>
+        <ul>
+          <li>Scanned PDFs contain only images, no text: run them through OCR first.</li>
+          <li>Tables and multi-column text are converted line by line, without table structure.</li>
+          <li>Files are processed on your computer; nothing is sent over the internet.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Lill82 · Free software under the <a href="https://github.com/Lill82/LillMarkDown/blob/master/LICENSE">AGPL-3.0</a></span>
+    <span><a href="https://github.com/Lill82/LillMarkDown">Source code</a> · <a href="https://github.com/Lill82/LillMarkDown/releases">Releases</a> · <a href="https://github.com/Lill82/LillMarkDown/issues">Report a problem</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

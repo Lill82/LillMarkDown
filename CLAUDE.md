@@ -40,6 +40,10 @@ Three projects, all .NET 10. Shared settings and product metadata (Version, Auth
 - The self-contained/single-file/RID settings in `LillMarkDown.csproj` are gated behind `Condition="'$(PublishProtocol)' != ''"`, so they only activate with a publish profile (which sets `PublishProtocol=FileSystem`). Debug/Run builds stay framework-dependent and fast. Plain `dotnet publish` without the profile will **not** produce the single-file exe.
 - All user-facing text must remain in Catalan.
 
+## Website (GitHub Pages)
+
+`docs/` is published from `master` to https://lill82.github.io/LillMarkDown/. Three hand-written pages share `docs/style.css` and the images: `index.html` (Catalan, default), `es/index.html`, `en/index.html`. Any content change must be made in all three; keep their markup identical apart from the text, the current language in the switcher, and the "interface is in Catalan" note on ES/EN. The app UI itself stays Catalan only.
+
 ## Releases
 
 `.github/workflows/build.yml` builds and tests every push and PR. Pushing a `v*` tag (e.g. `v1.1.0`) also publishes the exe with that version and attaches it to a GitHub Release. Bump `Version` in `Directory.Build.props` to match.
