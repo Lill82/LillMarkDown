@@ -31,6 +31,10 @@ dotnet publish LillMarkDown -p:PublishProfile=win-x64
 
 ## Llicència
 
-[CC BY 4.0](LICENSE.md) © 2026 Lill82
+Copyright © 2026 Lill82
 
-L'executable inclou iText 7, que es distribueix sota la llicència AGPL-3.0.
+Aquest programa és programari lliure: podeu redistribuir-lo i/o modificar-lo sota els termes de la [GNU Affero General Public License](LICENSE), tal com la publica la Free Software Foundation, versió 3 de la llicència.
+
+Aquest programa es distribueix amb l'esperança que sigui útil, però SENSE CAP GARANTIA, ni tan sols la garantia implícita de COMERCIABILITAT o ADEQUACIÓ A UNA FINALITAT DETERMINADA. Vegeu la GNU Affero General Public License per a més detalls.
+
+Utilitza [iText 7](https://github.com/itext/itext-dotnet), també sota llicència AGPL-3.0.

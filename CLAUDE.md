@@ -44,4 +44,4 @@ Output is a `.md` file written alongside the source PDF, with `---` page separat
 
 ## Licence
 
-CC BY 4.0 — see `LICENSE.md`.
+AGPL-3.0-only — see `LICENSE`. Required because the app links iText 7 (AGPL); do not relicense to anything incompatible or swap in dependencies with AGPL-incompatible licences.
