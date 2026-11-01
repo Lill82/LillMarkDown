@@ -1,0 +1,20 @@
+<Project>
+
+  <!-- Shared by every project in the repo. -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+
+    <!-- Product metadata (shown in the exe's Properties → Details). CI overrides Version from the git tag. -->
+    <Version>1.0.0</Version>
+    <Product>LillMarkDown</Product>
+    <Authors>Lill82</Authors>
+    <Company>Lill82</Company>
+    <Copyright>© 2026 Lill82 — AGPL-3.0-only</Copyright>
+    <Description>Converteix fitxers PDF a Markdown.</Description>
+    <RepositoryUrl>https://github.com/Lill82/LillMarkDown</RepositoryUrl>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+
+</Project>

@@ -2,13 +2,12 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <AssemblyName>LillMarkDown</AssemblyName>
     <RootNamespace>LillMarkDown</RootNamespace>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ApplicationIcon>LillMarkDown.ico</ApplicationIcon>
   </PropertyGroup>
 
   <!-- Publish-only: active when a publish profile sets PublishProtocol (e.g. "FileSystem").
@@ -22,15 +21,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="itext7" Version="9.6.0" />
+    <ProjectReference Include="..\LillMarkDown.Core\LillMarkDown.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="LillMarkDown.ico" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <ApplicationIcon>LillMarkDown.ico</ApplicationIcon>
-  </PropertyGroup>
 
 </Project>

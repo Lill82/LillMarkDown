@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LillMarkDown</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="itext7" Version="9.8.0" />
+    <!-- Required by iText 8+ to open encrypted (e.g. AES) PDFs. -->
+    <PackageReference Include="itext7.bouncy-castle-adapter" Version="9.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="LillMarkDown.Tests" />
+  </ItemGroup>
+
+</Project>

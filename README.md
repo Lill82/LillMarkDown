@@ -1,33 +1,44 @@
 # LillMarkDown
 
+[![build](https://github.com/Lill82/LillMarkDown/actions/workflows/build.yml/badge.svg)](https://github.com/Lill82/LillMarkDown/actions/workflows/build.yml)
+
 Aplicació d'escriptori per a Windows que converteix fitxers PDF a Markdown.
 
-Arrossegueu un PDF a la finestra (o seleccioneu-lo amb el botó d'exploració) i es genera un fitxer `.md` al costat del PDF original.
+Arrossegueu PDFs o carpetes a la finestra (o feu clic per seleccionar-los) i es genera un fitxer `.md` al costat de cada PDF.
 
-## Com funciona
+## Descàrrega
 
-- Extreu el text pàgina a pàgina amb [iText 7](https://github.com/itext/itext-dotnet), respectant l'ordre espacial.
-- Detecta els títols de manera heurística:
-  - Línia en majúscules de fins a 80 caràcters → títol de nivell 2.
-  - Línia curta (fins a 60 caràcters), sense puntuació final i precedida d'una línia en blanc → títol de nivell 3.
-  - La resta → paràgrafs.
-- Separa les pàgines amb `---`.
+Baixeu `LillMarkDown.exe` de la [darrera versió](https://github.com/Lill82/LillMarkDown/releases/latest). És un únic executable autocontingut: no cal instal·lar .NET.
 
-## Requisits
+## Què fa
 
-- Windows 10/11 x64
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) (només per compilar; l'executable publicat és autocontingut)
+- **Títols** segons la mida de la lletra (`#`, `##`, `###`). Les línies curtes en negreta o en majúscules es converteixen en un títol de nivell inferior.
+- **Paràgrafs**: torna a unir les línies partides i les paraules tallades amb guionet a final de línia.
+- **Llistes**: `•`, `–`, `1.`, `1)`, `a)` → llistes de Markdown.
+- **Capçaleres, peus de pàgina i números de pàgina** repetits: s'eliminen.
+- **Pàgines** separades amb `---`.
+- **Carpetes**: en arrossegar una carpeta, es converteixen tots els PDFs que conté, també els de les subcarpetes.
+- **Avisos**: indica els PDFs sense text (escanejats) i els protegits amb contrasenya.
+- Per defecte no sobreescriu cap fitxer: si `document.md` ja existeix, crea `document (2).md`. Es pot canviar amb l'opció *Sobreescriu els fitxers .md existents*.
+
+### Limitacions
+
+- Els PDFs escanejats (només imatge) no tenen text; caldria passar-los abans per un OCR.
+- Les taules i els textos a diverses columnes es converteixen línia a línia, sense estructura de taula.
 
 ## Compilació
 
-```powershell
-# Compilar i executar (Debug)
-dotnet run --project LillMarkDown
+Requereix el [SDK de .NET 10](https://dotnet.microsoft.com/download/dotnet/10.0).
 
-# Publicar un executable únic autocontingut (win-x64)
+```powershell
+dotnet build                                   # compilar
+dotnet test                                    # proves
+dotnet run --project LillMarkDown              # executar
 dotnet publish LillMarkDown -p:PublishProfile=win-x64
 # Sortida: LillMarkDown/bin/publish/LillMarkDown.exe
 ```
+
+Per publicar una versió nova, creeu i pugeu una etiqueta (`git tag v1.1.0 && git push origin v1.1.0`). GitHub Actions compila l'executable i el publica a *Releases*.
 
 ## Llicència
 

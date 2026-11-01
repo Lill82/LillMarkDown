@@ -3,18 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="LillMarkDown"
         Icon="LillMarkDown.ico"
-        Height="500" Width="560"
-        MinHeight="400" MinWidth="440"
+        Height="560" Width="560"
+        MinHeight="440" MinWidth="440"
         WindowStartupLocation="CenterScreen"
         Background="#F4F6F9"
         UseLayoutRounding="True">
 
-    <Grid Margin="24,20,24,20">
+    <Grid Margin="24,20,24,14">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="130"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Títol -->
@@ -23,53 +25,81 @@
             <TextBlock Text="MarkDown" FontSize="22" FontWeight="Bold" Foreground="#1A73E8"/>
         </StackPanel>
 
-        <!-- Zona d'arrossegament -->
-        <Grid Grid.Row="1"
-              x:Name="DropZoneGrid"
-              AllowDrop="True"
-              Cursor="Hand"
-              Drop="DropZone_Drop"
-              DragEnter="DropZone_DragEnter"
-              DragLeave="DropZone_DragLeave"
-              DragOver="DropZone_DragOver"
-              MouseLeftButtonDown="DropZone_Click">
+        <!-- Zona d'arrossegament: és un botó perquè es pugui fer servir amb el teclat (Tab + Retorn/Espai) -->
+        <Button Grid.Row="1"
+                x:Name="DropZone"
+                AllowDrop="True"
+                Cursor="Hand"
+                Click="DropZone_Click"
+                Drop="DropZone_Drop"
+                DragEnter="DropZone_DragEnter"
+                DragLeave="DropZone_DragLeave"
+                DragOver="DropZone_DragOver"
+                GotKeyboardFocus="DropZone_FocusChanged"
+                LostKeyboardFocus="DropZone_FocusChanged"
+                FocusVisualStyle="{x:Null}"
+                AutomationProperties.Name="Selecciona fitxers PDF per convertir">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <ContentPresenter/>
+                </ControlTemplate>
+            </Button.Template>
 
-            <Rectangle x:Name="DropZoneRect"
-                       Stroke="#B0C4DE"
-                       StrokeThickness="2"
-                       StrokeDashArray="6 3"
-                       Fill="#FAFCFF"
-                       RadiusX="10" RadiusY="10"/>
+            <Grid x:Name="DropZoneGrid" Background="Transparent">
+                <Rectangle x:Name="DropZoneRect"
+                           Stroke="#B0C4DE"
+                           StrokeThickness="2"
+                           StrokeDashArray="6 3"
+                           Fill="#FAFCFF"
+                           RadiusX="10" RadiusY="10"/>
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
-                        IsHitTestVisible="False">
-                <Border Background="#E8F0FE" CornerRadius="8"
-                        Padding="16,10" HorizontalAlignment="Center">
-                    <TextBlock Text="PDF" FontSize="28" FontWeight="Bold"
-                               Foreground="#1A73E8" HorizontalAlignment="Center"/>
-                </Border>
-                <TextBlock Text="Arrossega fitxers PDF aquí"
-                           FontSize="16" FontWeight="Medium"
-                           Foreground="#3C4043"
-                           HorizontalAlignment="Center"
-                           Margin="0,14,0,4"/>
-                <TextBlock Text="o fes clic per cercar"
-                           FontSize="12"
-                           Foreground="#80868B"
-                           HorizontalAlignment="Center"/>
-            </StackPanel>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                            IsHitTestVisible="False">
+                    <Border Background="#E8F0FE" CornerRadius="8"
+                            Padding="16,10" HorizontalAlignment="Center">
+                        <TextBlock Text="PDF" FontSize="28" FontWeight="Bold"
+                                   Foreground="#1A73E8" HorizontalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="Arrossega fitxers PDF o carpetes aquí"
+                               FontSize="16" FontWeight="Medium"
+                               Foreground="#3C4043"
+                               HorizontalAlignment="Center"
+                               Margin="0,14,0,4"/>
+                    <TextBlock Text="o fes clic per cercar"
+                               FontSize="12"
+                               Foreground="#80868B"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Button>
+
+        <!-- Opcions -->
+        <Grid Grid.Row="2" Margin="0,10,0,0">
+            <CheckBox x:Name="OverwriteCheck"
+                      Content="Sobreescriu els fitxers .md existents"
+                      Foreground="#5A6473"
+                      FontSize="12"
+                      VerticalAlignment="Center"/>
+            <TextBlock x:Name="OpenFolderLink"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       FontSize="12"
+                       Visibility="Collapsed">
+                <Hyperlink Click="OpenFolder_Click" Foreground="#1A73E8">Obre la carpeta</Hyperlink>
+            </TextBlock>
         </Grid>
 
         <!-- Estat -->
-        <TextBlock Grid.Row="2"
+        <TextBlock Grid.Row="3"
                    x:Name="StatusText"
                    Text="A punt — arrossega un PDF per començar."
                    Foreground="#80868B"
                    FontSize="12"
-                   Margin="0,10,0,6"/>
+                   TextTrimming="CharacterEllipsis"
+                   Margin="0,8,0,6"/>
 
         <!-- Registre -->
-        <Border Grid.Row="3"
+        <Border Grid.Row="4"
                 Background="White"
                 CornerRadius="6"
                 BorderBrush="#DDE1E7"
@@ -85,5 +115,17 @@
                            TextWrapping="Wrap"/>
             </ScrollViewer>
         </Border>
+
+        <!-- Peu: versió i enllaç al codi font (requisit AGPL) -->
+        <TextBlock Grid.Row="5"
+                   HorizontalAlignment="Right"
+                   Margin="0,8,0,0"
+                   FontSize="11"
+                   Foreground="#80868B">
+            <Run x:Name="VersionRun"/>
+            <Run Text=" · "/>
+            <Hyperlink Click="SourceLink_Click" Foreground="#80868B"
+                       ToolTip="https://github.com/Lill82/LillMarkDown">Codi font (AGPL-3.0)</Hyperlink>
+        </TextBlock>
     </Grid>
 </Window>

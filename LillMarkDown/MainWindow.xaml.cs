@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -12,23 +10,33 @@ namespace LillMarkDown;
 
 public partial class MainWindow : Window
 {
-    private static readonly SolidColorBrush StrokeNormal  = new(Color.FromRgb(176, 196, 222));
-    private static readonly SolidColorBrush StrokeActive  = new(Color.FromRgb(26,  115, 232));
-    private static readonly SolidColorBrush FillNormal    = new(Color.FromRgb(250, 252, 255));
-    private static readonly SolidColorBrush FillActive    = new(Color.FromRgb(232, 240, 254));
-    private static readonly SolidColorBrush ColorBlue     = new(Color.FromRgb(26,  115, 232));
-    private static readonly SolidColorBrush ColorGreen    = new(Color.FromRgb(15,  157,  88));
-    private static readonly SolidColorBrush ColorOrange   = new(Color.FromRgb(230,  81,   0));
+    private const string SourceUrl = "https://github.com/Lill82/LillMarkDown";
+
+    private static readonly SolidColorBrush StrokeNormal = new(Color.FromRgb(176, 196, 222));
+    private static readonly SolidColorBrush StrokeActive = new(Color.FromRgb(26, 115, 232));
+    private static readonly SolidColorBrush FillNormal   = new(Color.FromRgb(250, 252, 255));
+    private static readonly SolidColorBrush FillActive   = new(Color.FromRgb(232, 240, 254));
+    private static readonly SolidColorBrush ColorBlue    = new(Color.FromRgb(26, 115, 232));
+    private static readonly SolidColorBrush ColorGreen   = new(Color.FromRgb(15, 157, 88));
+    private static readonly SolidColorBrush ColorOrange  = new(Color.FromRgb(230, 81, 0));
 
     private bool _busy;
+    private bool _dragging;
+    private string? _lastOutput;
 
-    public MainWindow() => InitializeComponent();
+    public MainWindow()
+    {
+        InitializeComponent();
+
+        var v = Assembly.GetExecutingAssembly().GetName().Version;
+        VersionRun.Text = v is null ? string.Empty : $"v{v.Major}.{v.Minor}.{v.Build}";
+    }
 
     // ── Esdeveniments d'arrossegament ─────────────────────────────────────
 
     private void DropZone_DragOver(object sender, DragEventArgs e)
     {
-        e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop)
+        e.Effects = !_busy && e.Data.GetDataPresent(DataFormats.FileDrop)
             ? DragDropEffects.Copy
             : DragDropEffects.None;
         e.Handled = true;
@@ -36,8 +44,11 @@ public partial class MainWindow : Window
 
     private void DropZone_DragEnter(object sender, DragEventArgs e)
     {
-        if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            SetZoneHighlight(true);
+        if (!_busy && e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            _dragging = true;
+            UpdateZoneHighlight();
+        }
         e.Handled = true;
     }
 
@@ -46,22 +57,25 @@ public partial class MainWindow : Window
         var pos = e.GetPosition(DropZoneGrid);
         var bounds = new Rect(0, 0, DropZoneGrid.ActualWidth, DropZoneGrid.ActualHeight);
         if (!bounds.Contains(pos))
-            SetZoneHighlight(false);
+        {
+            _dragging = false;
+            UpdateZoneHighlight();
+        }
         e.Handled = true;
     }
 
     private void DropZone_Drop(object sender, DragEventArgs e)
     {
-        SetZoneHighlight(false);
-        if (e.Data.GetDataPresent(DataFormats.FileDrop))
-        {
-            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            _ = ProcessFilesAsync(files);
-        }
+        _dragging = false;
+        UpdateZoneHighlight();
+        if (e.Data.GetData(DataFormats.FileDrop) is string[] paths)
+            _ = ProcessPathsAsync(paths);
         e.Handled = true;
     }
 
-    private void DropZone_Click(object sender, MouseButtonEventArgs e)
+    private void DropZone_FocusChanged(object sender, KeyboardFocusChangedEventArgs e) => UpdateZoneHighlight();
+
+    private void DropZone_Click(object sender, RoutedEventArgs e)
     {
         var dlg = new OpenFileDialog
         {
@@ -69,46 +83,83 @@ public partial class MainWindow : Window
             Filter      = "Fitxers PDF|*.pdf",
             Multiselect = true
         };
-        if (dlg.ShowDialog() == true)
-            _ = ProcessFilesAsync(dlg.FileNames);
+        if (dlg.ShowDialog(this) == true)
+            _ = ProcessPathsAsync(dlg.FileNames);
     }
+
+    // ── Enllaços ──────────────────────────────────────────────────────────
+
+    private void OpenFolder_Click(object sender, RoutedEventArgs e)
+    {
+        if (_lastOutput is not null && File.Exists(_lastOutput))
+            Process.Start("explorer.exe", $"/select,\"{_lastOutput}\"");
+    }
+
+    private void SourceLink_Click(object sender, RoutedEventArgs e) =>
+        Process.Start(new ProcessStartInfo(SourceUrl) { UseShellExecute = true });
 
     // ── Conversió ─────────────────────────────────────────────────────────
 
-    private async Task ProcessFilesAsync(IEnumerable<string> paths)
+    private async Task ProcessPathsAsync(IEnumerable<string> paths)
     {
         // Prevent concurrent conversions racing on the status/log UI.
         if (_busy) return;
         _busy = true;
-        DropZoneGrid.IsEnabled = false;
+        DropZone.IsEnabled = false;
+        OverwriteCheck.IsEnabled = false;
+        bool overwrite = OverwriteCheck.IsChecked == true;
 
         try
         {
-            var pdfs = paths
-                .Where(p => p.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
-                .ToArray();
+            SetStatus("Cercant fitxers PDF...", ColorBlue);
+            var pdfs = await Task.Run(() => ExpandToPdfs(paths));
 
-            if (pdfs.Length == 0)
+            if (pdfs.Count == 0)
             {
                 SetStatus("No hi ha fitxers PDF a la selecció.", ColorOrange);
                 return;
             }
 
-            SetStatus($"Convertint {pdfs.Length} fitxer(s)...", ColorBlue);
+            int ok = 0, warn = 0, fail = 0;
 
-            int ok = 0, fail = 0;
-
-            foreach (var pdf in pdfs)
+            for (int i = 0; i < pdfs.Count; i++)
             {
+                string pdf = pdfs[i];
                 string name = Path.GetFileName(pdf);
+                SetStatus($"Convertint {i + 1} de {pdfs.Count}: {name}", ColorBlue);
+
                 try
                 {
-                    string markdown = await Task.Run(() => PdfConverter.Convert(pdf));
-                    // Use a non-colliding name so we never silently overwrite existing output.
-                    string outPath  = NonCollidingPath(Path.ChangeExtension(pdf, ".md"));
-                    await File.WriteAllTextAsync(outPath, markdown);
-                    AppendLog($"[OK]  {name}  →  {Path.GetFileName(outPath)}");
-                    ok++;
+                    var result = await Task.Run(() => PdfConverter.Convert(pdf));
+
+                    if (!result.HasText)
+                    {
+                        AppendLog($"[AVÍS] {name}: no conté text (PDF escanejat?). No s'ha creat cap fitxer.");
+                        warn++;
+                        continue;
+                    }
+
+                    string target = Path.ChangeExtension(pdf, ".md");
+                    string outPath = overwrite ? target : NonCollidingPath(target);
+                    await File.WriteAllTextAsync(outPath, result.Markdown + "\n");
+                    _lastOutput = outPath;
+
+                    int empty = result.PageCount - result.PagesWithText;
+                    if (empty > 0)
+                    {
+                        AppendLog($"[AVÍS] {name}  →  {Path.GetFileName(outPath)}  ({empty} de {result.PageCount} pàgines sense text)");
+                        warn++;
+                    }
+                    else
+                    {
+                        AppendLog($"[OK]  {name}  →  {Path.GetFileName(outPath)}");
+                        ok++;
+                    }
+                }
+                catch (PdfPasswordException)
+                {
+                    AppendLog($"[ERR] {name}: el PDF està protegit amb contrasenya.");
+                    fail++;
                 }
                 catch (Exception ex)
                 {
@@ -117,20 +168,47 @@ public partial class MainWindow : Window
                 }
             }
 
-            SetStatus(
-                fail == 0
-                    ? $"Fet — {ok} fitxer(s) convertits."
-                    : $"Fet — {ok} convertits, {fail} amb errors.",
-                fail == 0 ? ColorGreen : ColorOrange);
+            SetStatus(Summary(ok, warn, fail), fail + warn == 0 ? ColorGreen : ColorOrange);
+            OpenFolderLink.Visibility = _lastOutput is null ? Visibility.Collapsed : Visibility.Visible;
         }
         finally
         {
             _busy = false;
-            DropZoneGrid.IsEnabled = true;
+            DropZone.IsEnabled = true;
+            OverwriteCheck.IsEnabled = true;
         }
     }
 
+    private static string Summary(int ok, int warn, int fail)
+    {
+        var parts = new List<string> { $"{ok} convertit(s)" };
+        if (warn > 0) parts.Add($"{warn} amb avisos");
+        if (fail > 0) parts.Add($"{fail} amb errors");
+        return "Fet — " + string.Join(", ", parts) + ".";
+    }
+
     // ── Auxiliars ─────────────────────────────────────────────────────────
+
+    private static readonly EnumerationOptions RecursivePdfSearch = new()
+    {
+        RecurseSubdirectories = true,
+        IgnoreInaccessible = true,
+        MatchCasing = MatchCasing.CaseInsensitive,
+    };
+
+    /// <summary>Files are kept if they are PDFs; folders are searched recursively.</summary>
+    private static List<string> ExpandToPdfs(IEnumerable<string> paths)
+    {
+        var result = new List<string>();
+        foreach (var path in paths)
+        {
+            if (Directory.Exists(path))
+                result.AddRange(Directory.EnumerateFiles(path, "*.pdf", RecursivePdfSearch).Order());
+            else if (path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) && File.Exists(path))
+                result.Add(path);
+        }
+        return result.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+    }
 
     // Returns a path that does not yet exist, appending " (2)", " (3)" … as needed.
     private static string NonCollidingPath(string basePath)
@@ -146,8 +224,9 @@ public partial class MainWindow : Window
         }
     }
 
-    private void SetZoneHighlight(bool active)
+    private void UpdateZoneHighlight()
     {
+        bool active = _dragging || DropZone.IsKeyboardFocused;
         DropZoneRect.Stroke = active ? StrokeActive : StrokeNormal;
         DropZoneRect.Fill   = active ? FillActive   : FillNormal;
     }
