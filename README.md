@@ -35,7 +35,7 @@ dotnet build                                   # compilar
 dotnet test                                    # proves
 dotnet run --project LillMarkDown              # executar
 dotnet publish LillMarkDown -p:PublishProfile=win-x64
-# Sortida: LillMarkDown/bin/publish/LillMarkDown.exe
+# Sortida: LillMarkDown/bin/publish/<versió>_<aaaammdd-hhmmss>/LillMarkDown.exe (una carpeta nova per compilació)
 ```
 
 Per publicar una versió nova, creeu i pugeu una etiqueta (`git tag v1.1.0 && git push origin v1.1.0`). GitHub Actions compila l'executable i el publica a *Releases*.

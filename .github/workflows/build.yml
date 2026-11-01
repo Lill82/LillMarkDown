@@ -28,7 +28,8 @@ jobs:
       - name: Publish
         shell: pwsh
         run: |
-          $props = @('-p:PublishProfile=win-x64')
+          # Fixed output folder in CI (locally each publish gets its own versioned folder).
+          $props = @('-p:PublishProfile=win-x64', '-p:PublishDir=bin/publish/ci/')
           if ('${{ github.ref_type }}' -eq 'tag') {
             $props += "-p:Version=$('${{ github.ref_name }}'.TrimStart('v'))"
           }
@@ -37,10 +38,10 @@ jobs:
       - uses: actions/upload-artifact@v5
         with:
           name: LillMarkDown
-          path: LillMarkDown/bin/publish/LillMarkDown.exe
+          path: LillMarkDown/bin/publish/ci/LillMarkDown.exe
 
       - name: Release
         if: github.ref_type == 'tag'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${{ github.ref_name }}" LillMarkDown/bin/publish/LillMarkDown.exe --title "LillMarkDown ${{ github.ref_name }}" --generate-notes
+        run: gh release create "${{ github.ref_name }}" LillMarkDown/bin/publish/ci/LillMarkDown.exe --title "LillMarkDown ${{ github.ref_name }}" --generate-notes

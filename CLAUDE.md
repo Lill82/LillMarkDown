@@ -9,7 +9,8 @@ dotnet build                                  # Debug build (whole solution)
 dotnet test                                   # xUnit v3 tests (Microsoft.Testing.Platform, see global.json)
 dotnet run --project LillMarkDown             # run the app
 dotnet publish LillMarkDown -p:PublishProfile=win-x64
-# Output: LillMarkDown/bin/publish/LillMarkDown.exe (single-file, self-contained)
+# Output: LillMarkDown/bin/publish/<version>_<yyyyMMdd-HHmmss>/LillMarkDown.exe (single-file, self-contained)
+# A new folder per publish; old builds are kept. CI pins it with -p:PublishDir=bin/publish/ci/
 ```
 
 Run `dotnet test` after any change to the conversion rules. For changes the synthetic tests can't cover, also convert a few real PDFs and read the output.
